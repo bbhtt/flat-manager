@@ -172,27 +172,27 @@ impl Variant {
     }
 
     pub fn as_string(&self) -> OstreeResult<String> {
-        return self.root().parse_as_string();
+        self.root().parse_as_string()
     }
 
     pub fn as_string_vec(&self) -> OstreeResult<Vec<String>> {
-        return self.root().parse_as_string_vec();
+        self.root().parse_as_string_vec()
     }
 
     pub fn as_u64(&self) -> OstreeResult<u64> {
-        return self.root().parse_as_u64();
+        self.root().parse_as_u64()
     }
 
     pub fn as_i32(&self) -> OstreeResult<i32> {
-        return self.root().parse_as_i32();
+        self.root().parse_as_i32()
     }
 
     pub fn as_i32_le(&self) -> OstreeResult<i32> {
-        return self.root().parse_as_i32_le();
+        self.root().parse_as_i32_le()
     }
 
     pub fn as_bytes(&self) -> &[u8] {
-        return self.root().parse_as_bytes();
+        self.root().parse_as_bytes()
     }
 }
 
@@ -458,7 +458,7 @@ impl<'a> SubVariant<'a> {
             )));
         }
         let array = self.parse_as_variable_width_array(0)?;
-        return array.iter().map(|v| v.parse_as_string()).collect();
+        array.iter().map(|v| v.parse_as_string()).collect()
     }
 
     fn parse_as_bytes(&self) -> &'a [u8] {
@@ -637,7 +637,7 @@ pub fn load_commit_file(path: &path::Path) -> OstreeResult<OstreeCommit> {
 
     let variant = Variant::new("(a{sv}aya(say)sstayay)".to_string(), contents)?;
 
-    return parse_commit(&variant.root());
+    parse_commit(&variant.root())
 }
 
 pub fn get_commit(repo_path: &path::Path, commit: &str) -> OstreeResult<OstreeCommit> {
