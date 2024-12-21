@@ -3,13 +3,13 @@ use actix_web::error::BlockingError;
 use actix_web::http::StatusCode;
 use actix_web::{error::ResponseError, HttpResponse};
 use diesel::result::Error as DieselError;
-use failure::Fail;
 use serde_json::json;
 use std::io;
+use thiserror::Error;
 
-#[derive(Fail, Debug, Clone)]
+#[derive(Error, Debug, Clone)]
 pub enum DeltaGenerationError {
-    #[fail(display = "{}", _0)]
+    #[error("{0}")]
     Failed(String),
 }
 
@@ -31,12 +31,12 @@ impl From<OstreeError> for DeltaGenerationError {
     }
 }
 
-#[derive(Fail, Debug, Clone)]
+#[derive(Error, Debug, Clone)]
 pub enum JobError {
-    #[fail(display = "InternalError: {}", _0)]
+    #[error("InternalError: {0}")]
     InternalError(String),
 
-    #[fail(display = "DbError: {}", _0)]
+    #[error("DbError: {0}")]
     DBError(String),
 }
 
@@ -95,27 +95,27 @@ impl From<io::Error> for JobError {
     }
 }
 
-#[derive(Fail, Debug)]
+#[derive(Error, Debug)]
 pub enum ApiError {
-    #[fail(display = "Internal Server Error ({})", _0)]
+    #[error("Internal Server Error ({0})")]
     InternalServerError(String),
 
-    #[fail(display = "NotFound")]
+    #[error("NotFound")]
     NotFound,
 
-    #[fail(display = "BadRequest: {}", _0)]
+    #[error("BadRequest: {0}")]
     BadRequest(String),
 
-    #[fail(display = "WrongRepoState({}): {}", _2, _0)]
+    #[error("WrongRepoState({2}): {0}")]
     WrongRepoState(String, String, String),
 
-    #[fail(display = "WrongPublishedState({}): {}", _2, _0)]
+    #[error("WrongPublishedState({2}): {0}")]
     WrongPublishedState(String, String, String),
 
-    #[fail(display = "InvalidToken: {}", _0)]
+    #[error("InvalidToken: {0}")]
     InvalidToken(String),
 
-    #[fail(display = "NotEnoughPermissions")]
+    #[error("NotEnoughPermissions")]
     NotEnoughPermissions(String),
 }
 

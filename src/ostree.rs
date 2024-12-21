@@ -1,6 +1,5 @@
 use base64::{engine::general_purpose, Engine as _};
 use byteorder::{ByteOrder, LittleEndian, NativeEndian};
-use failure::Fail;
 use futures::future;
 use futures::future::Either;
 use futures::Future;
@@ -16,24 +15,25 @@ use std::thread::sleep;
 use std::time::Duration;
 use std::{collections::HashMap, path::Path};
 use std::{fs, io};
+use thiserror::Error;
 use tokio_process::CommandExt;
 use walkdir::WalkDir;
 
-#[derive(Fail, Debug, Clone, Eq, PartialEq)]
+#[derive(Error, Debug, Clone, Eq, PartialEq)]
 pub enum OstreeError {
-    #[fail(display = "No such ref: {}", _0)]
+    #[error("No such ref: {0}")]
     NoSuchRef(String),
-    #[fail(display = "No such commit: {}", _0)]
+    #[error("No such commit: {0}")]
     NoSuchCommit(String),
-    #[fail(display = "No such object: {}", _0)]
+    #[error("No such object: {0}")]
     NoSuchObject(String),
-    #[fail(display = "Invalid utf8 string")]
+    #[error("Invalid utf8 string")]
     InvalidUtf8,
-    #[fail(display = "Command {} failed to start: {}", _0, _1)]
+    #[error("Command {0} failed to start: {1}")]
     ExecFailed(String, String),
-    #[fail(display = "Command {} exited unsucessfully with stderr: {}", _0, _1)]
+    #[error("Command {0} exited unsuccessfully with stderr: {1}")]
     CommandFailed(String, String),
-    #[fail(display = "Internal Error: {}", _0)]
+    #[error("Internal Error: {0}")]
     InternalError(String),
 }
 
