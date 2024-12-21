@@ -835,48 +835,6 @@ impl std::fmt::Display for Delta {
         )
     }
 }
-#[cfg(test)]
-mod tests {
-    // Note this useful idiom: importing names from outer (for mod tests) scope.
-    use super::*;
-
-    #[test]
-    fn test_variant_type_strings() {
-        assert_eq!(type_string_element_len("1"), None);
-        assert_eq!(type_string_element_len("i"), Some(1));
-        assert_eq!(type_string_element_len("s"), Some(1));
-        assert_eq!(type_string_element_len("asas"), Some(2));
-        assert_eq!(type_string_split("asas"), Some(("as", "as")));
-        assert_eq!(type_string_element_len("(ssas)as"), Some(6));
-        assert_eq!(type_string_element_len("(ssas"), None);
-        assert_eq!(type_string_element_len("(ssas)"), Some(6));
-        assert_eq!(type_string_element_len("(sa{sv}sas)ias"), Some(11));
-        assert_eq!(type_string_split("(ssas)ii"), Some(("(ssas)", "ii")));
-        assert_eq!(type_string_split("a{sv}as"), Some(("a{sv}", "as")));
-        assert_eq!(type_string_split("a{vv}as"), None);
-    }
-
-    #[test]
-    fn test_delta_name() {
-        assert_eq!(
-            delta_part_to_hex("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c"),
-            Ok("3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97".to_string())
-        );
-        assert_eq!(
-            hex_to_delta_part("3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97"),
-            Ok("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c".to_string())
-        );
-        assert_eq!(
-            Delta::from_name("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c"),
-            Ok(Delta {
-                from: None,
-                to: "3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97".to_string()
-            })
-        );
-        assert_eq!(Delta::from_name("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c-3dpOrJG4MNyKHDDGXHpH_zd9NXugnexr5jpvSFQ77S4"),
-                   Ok(Delta { from: Some("3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97".to_string()), to: "ddda4eac91b830dc8a1c30c65c7a47ff377d357ba09dec6be63a6f48543bed2e".to_string() }));
-    }
-}
 
 pub fn list_deltas(repo_path: &path::Path) -> Vec<Delta> {
     let deltas_dir = get_deltas_path(repo_path);
@@ -1111,4 +1069,47 @@ min-free-space-size=500MB
         .as_bytes(),
     )?;
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    // Note this useful idiom: importing names from outer (for mod tests) scope.
+    use super::*;
+
+    #[test]
+    fn test_variant_type_strings() {
+        assert_eq!(type_string_element_len("1"), None);
+        assert_eq!(type_string_element_len("i"), Some(1));
+        assert_eq!(type_string_element_len("s"), Some(1));
+        assert_eq!(type_string_element_len("asas"), Some(2));
+        assert_eq!(type_string_split("asas"), Some(("as", "as")));
+        assert_eq!(type_string_element_len("(ssas)as"), Some(6));
+        assert_eq!(type_string_element_len("(ssas"), None);
+        assert_eq!(type_string_element_len("(ssas)"), Some(6));
+        assert_eq!(type_string_element_len("(sa{sv}sas)ias"), Some(11));
+        assert_eq!(type_string_split("(ssas)ii"), Some(("(ssas)", "ii")));
+        assert_eq!(type_string_split("a{sv}as"), Some(("a{sv}", "as")));
+        assert_eq!(type_string_split("a{vv}as"), None);
+    }
+
+    #[test]
+    fn test_delta_name() {
+        assert_eq!(
+            delta_part_to_hex("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c"),
+            Ok("3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97".to_string())
+        );
+        assert_eq!(
+            hex_to_delta_part("3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97"),
+            Ok("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c".to_string())
+        );
+        assert_eq!(
+            Delta::from_name("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c"),
+            Ok(Delta {
+                from: None,
+                to: "3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97".to_string()
+            })
+        );
+        assert_eq!(Delta::from_name("OkiocD9GLq_Nt660BvWyrH8G62dAvtLv7RPqngWqf5c-3dpOrJG4MNyKHDDGXHpH_zd9NXugnexr5jpvSFQ77S4"),
+                   Ok(Delta { from: Some("3a48a8703f462eafcdb7aeb406f5b2ac7f06eb6740bed2efed13ea9e05aa7f97".to_string()), to: "ddda4eac91b830dc8a1c30c65c7a47ff377d357ba09dec6be63a6f48543bed2e".to_string() }));
+    }
 }
