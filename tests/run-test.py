@@ -2,16 +2,19 @@
 
 import os
 import subprocess
-import sys
+import time
 from subprocess import PIPE
 
 
 def exec(cmd):
     print("Executing", cmd)
 
-    p = subprocess.run(cmd, stdout=PIPE, stderr=sys.stderr)
+    p = subprocess.run(cmd, stdout=PIPE, stderr=PIPE)
 
     if p.returncode != 0:
+        print(f"Command `{cmd}` failed with exit code {p.returncode}")
+        print("stderr:", p.stderr.decode().strip())
+        print("stdout:", p.stdout.decode().strip())
         raise AssertionError(f"Command `{cmd}` failed with exit code {p.returncode}")
 
     return p.stdout.decode().strip()
@@ -33,8 +36,19 @@ exec(
 
 # Generate a flat-manager token
 os.environ["REPO_TOKEN"] = exec(
-    ["cargo", "run", "--bin=gentoken", "--", "--secret=secret", "--repo=stable"]
+    [
+        "cargo",
+        "run",
+        "--bin=gentoken",
+        "--",
+        "--secret=secret",
+        "--repo=stable",
+        "--duration",
+        "60",
+    ]
 )
+
+time.sleep(180)
 
 # Create a new build and save the repo URL
 build_repo = exec(
